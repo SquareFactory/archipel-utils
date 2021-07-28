@@ -21,7 +21,7 @@ with open("archipel_utils/__init__.py") as f:
     version = re.search(r"\d.\d.\d", f.read()).group(0)  # type: ignore
 
 setup(
-    name="archipel_utils",
+    name="archipel-utils",
     version=version,
     license="Apache License 2.0",
     description="Small utils for Archipel plateform",
@@ -32,7 +32,6 @@ setup(
     keywords=["archipel-utils", "archipel"],
     install_requires=[
         "msgpack>=1.0",
-        "opencv-python>=4.4.0",
         "pytest>=6.2",
         "pytest-cov>=2.11",
         "pytest-mock>=3.5",
