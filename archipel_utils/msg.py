@@ -13,7 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import logging
+import re
+
 import msgpack
+
+log = logging.getLogger(__name__)
 
 
 def get_encoded_msg(status: str, message: str = None, data: dict = None) -> bytes:
@@ -73,3 +78,11 @@ def get_decoded_msg(msg: bytes, mandatory_keys: set):
             return False, error_msg, {}
 
     return True, "", decoded_msg
+
+
+def sanitize_inputs(inputs: str, verbose: bool = True) -> str:
+    """Sanitize a string to avoid shell injection."""
+    new_inputs = re.sub("[^A-Za-z0-9_-]+", "", inputs.lower())
+    if new_inputs != inputs and verbose:
+        log.warning(f"inputs has been sanitized, '{inputs}' -> '{new_inputs}'")
+    return new_inputs
