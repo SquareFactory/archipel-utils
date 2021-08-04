@@ -20,3 +20,4 @@ exclude = '''
 [tool.coverage.report]
 exclude_lines = ['if __name__ == .__main__.:']
 precision = 2
+omit = ['archipel_utils/__init__.py']

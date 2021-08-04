@@ -2,9 +2,9 @@ name: Continuous integration
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   check-code-formatting:
@@ -50,6 +50,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install numpy and opencv
+        run: pip3 install opencv-python numpy
 
       - name: Install archipel_utils
         run: pip3 install --user --no-use-pep517 --editable .
