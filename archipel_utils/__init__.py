@@ -28,4 +28,4 @@ except ImportError:
 
 from .msg import *  # noqa
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
