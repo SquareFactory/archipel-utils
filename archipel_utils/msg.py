@@ -13,8 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import gc
 import logging
 import re
+import sys
+from types import FunctionType, ModuleType
+from typing import Any
 
 import msgpack
 
@@ -78,6 +82,29 @@ def get_decoded_msg(msg: bytes, mandatory_keys: set):
             return False, error_msg, {}
 
     return True, "", decoded_msg
+
+
+def get_obj_size(obj: Any) -> int:
+    """Get the bytesize of any object."""
+
+    BLACKLIST = type, ModuleType, FunctionType
+    if isinstance(obj, BLACKLIST):
+        raise TypeError("get_obj_size() does not take argument of type: {type(obj)}")
+
+    seen_ids = set()
+    size = 0
+    objects = [obj]
+
+    while objects:
+        need_referents = []
+        for obj in objects:
+            if not isinstance(obj, BLACKLIST) and id(obj) not in seen_ids:
+                seen_ids.add(id(obj))
+                size += sys.getsizeof(obj)
+                need_referents.append(obj)
+        objects = gc.get_referents(*need_referents)
+
+    return size
 
 
 def sanitize_inputs(inputs: str, verbose: bool = True) -> str:
