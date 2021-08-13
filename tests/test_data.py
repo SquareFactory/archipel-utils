@@ -13,10 +13,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import sys
+
 import numpy as np
 import pytest
 
 import archipel_utils as utils
+
+
+@pytest.mark.skip(
+    "cv2" not in sys.modules, reason="cv2 available, cannot this import error"
+)
+def test_import_error_from_serialize_img():
+    """Test serialize_img function when opencv not available."""
+    with pytest.raises(ImportError):
+        utils.serialize_img("")
+
+
+@pytest.mark.skip(
+    "cv2" not in sys.modules and "numpy" not in sys.modules,
+    reason="cv2/numpy available, cannot this import error",
+)
+def test_import_error_for_deserialize_img():
+    """Test serialize_img function when opencv/numpy not available."""
+    with pytest.raises(ImportError):
+        utils.deserialize_img("")
 
 
 def test_serialize_deserialize_img():

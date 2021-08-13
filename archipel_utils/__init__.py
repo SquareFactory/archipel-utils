@@ -13,19 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import warnings
-
-try:
-    from .data import *  # noqa
-except ImportError:
-    with warnings.catch_warnings():
-        warnings.simplefilter("always", ImportWarning)
-        warnings.warn(
-            "Missing packages, you will not be able to use archipel 'data' "
-            + "utils, others remain usable. To fix: pip install opencv numpy",
-            ImportWarning,
-        )
-
+from .data import *  # noqa
 from .msg import *  # noqa
 
 __version__ = "0.1.2"

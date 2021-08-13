@@ -51,12 +51,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install numpy and opencv
-        run: pip3 install opencv-python numpy
-
       - name: Install archipel_utils
         run: pip3 install --user --no-use-pep517 --editable .
         shell: bash
+
+      - name: Run pytest without numpy and opencv
+        run: python -m pytest --cov=archipel_utils .
+
+      - name: Install numpy and opencv
+        run: pip3 install opencv-python numpy
 
       - name: Run pytest
         run: python -m pytest --cov=archipel_utils .
