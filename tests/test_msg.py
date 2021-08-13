@@ -68,6 +68,13 @@ def test_decode_invalid_msg(msg):
     assert decoded_msg == {}
 
 
+def test_get_obj_size():
+    """Test get byte size of an object."""
+    assert utils.get_obj_size([]) > 0
+    assert utils.get_obj_size("") > 0
+    assert utils.get_obj_size({}) > 0
+
+
 def test_sanitize_inputs():
     """Test sanitize_inputs."""
     assert "-coucou99_" == utils.sanitize_inputs(";-.couCou99_@")
