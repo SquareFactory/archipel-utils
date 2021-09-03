@@ -13,20 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import warnings
+import os
+from pathlib import Path
+from typing import Union
 
-try:
-    from .data import *  # noqa
-except ImportError:
-    with warnings.catch_warnings():
-        warnings.simplefilter("always", ImportWarning)
-        warnings.warn(
-            "Missing packages, you will not be able to use archipel 'data' "
-            + "utils, others remain usable. To fix: pip install opencv numpy",
-            ImportWarning,
-        )
 
-from .msg import *  # noqa
-from .path import *  # noqa
+class cd:
+    """Context manager for changing the current working directory."""
 
-__version__ = "0.1.3"
+    def __init__(self, new_path: Union[Path, str]):
+        self.new_path = Path(new_path).resolve()
+
+    def __enter__(self):
+        """Save current working dir and change to new one."""
+        self.saved_path = Path.cwd()
+        os.chdir(self.new_path)
+
+    def __exit__(self, etype, value, traceback):
+        """Change current dir to saved one."""
+        os.chdir(self.saved_path)

@@ -13,20 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import warnings
+from pathlib import Path
 
-try:
-    from .data import *  # noqa
-except ImportError:
-    with warnings.catch_warnings():
-        warnings.simplefilter("always", ImportWarning)
-        warnings.warn(
-            "Missing packages, you will not be able to use archipel 'data' "
-            + "utils, others remain usable. To fix: pip install opencv numpy",
-            ImportWarning,
-        )
+import archipel_utils as utils
 
-from .msg import *  # noqa
-from .path import *  # noqa
 
-__version__ = "0.1.3"
+def test_cd():
+    """Test change current working during through context manager."""
+    initial_path = Path.cwd().resolve()
+    new_path = Path("archipel_utils").resolve()
+    with utils.cd(new_path):
+        assert str(new_path) == str(Path.cwd())
+    assert str(initial_path) == str(Path.cwd())
