@@ -28,5 +28,6 @@ except ImportError:
 
 from .msg import *  # noqa
 from .path import *  # noqa
+from .process import *  # noqa
 
 __version__ = "0.1.4"
