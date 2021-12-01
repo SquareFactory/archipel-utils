@@ -13,29 +13,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import base64
+import io
 
-import cv2
 import numpy as np
+from PIL import Image
 
 
 def serialize_img(array: np.ndarray) -> bytes:
     """Serialize a numpy array into bytes."""
     if array.max() > 255:
-        raise ValueError("Can only serialize 16bits images")
-    if "int" not in str(array.dtype):
-        raise ValueError(f"Array dtype must be 'uint8', got {array.dtype}")
-    success, encoded_array = cv2.imencode(".png", array)
-    if not success:
-        raise ValueError("Fail to encode array")
-    return base64.b64encode(encoded_array)
+        raise ValueError("Can only serialize 8bits images")
+    if array.dtype != "uint8":
+        raise ValueError(f"Array dtype must be 'uint8', got '{array.dtype}'")
+    buffer = io.BytesIO()
+    Image.fromarray(array).save(buffer, format="png")
+    return buffer.getvalue()
 
 
 def deserialize_img(serialized_array: bytes) -> np.ndarray:
     """Serialize a bytes variable into numpy array."""
-    decoded_array = base64.b64decode(serialized_array)
-    decoded_array = np.frombuffer(decoded_array, np.uint8)
-    decoded_array = cv2.imdecode(decoded_array, cv2.IMREAD_UNCHANGED)
+    decoded_array = Image.open(io.BytesIO(bytearray(serialized_array)))
     if decoded_array is None:
         raise ValueError("Fail to decode serialized array")
-    return decoded_array
+    return np.array(decoded_array)

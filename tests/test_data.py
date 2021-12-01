@@ -21,7 +21,7 @@ import archipel_utils as utils
 
 def test_serialize_deserialize_img():
     """Test serialized and deserialized img."""
-    fake_img = np.random.randint(0, 255, (600, 600, 3))
+    fake_img = np.random.randint(0, 255, (600, 600, 3)).astype(np.uint8)
     serialized_img = utils.serialize_img(fake_img)
     deserialized_img = utils.deserialize_img(serialized_img)
     assert np.equal(fake_img, deserialized_img).all()
