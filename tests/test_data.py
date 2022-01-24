@@ -19,31 +19,29 @@ import pytest
 import archipel_utils as utils
 
 
-def test_serialize_deserialize_img():
-    """Test serialized and deserialized img."""
-    fake_img = np.random.randint(0, 255, (600, 600, 3)).astype(np.uint8)
-    serialized_img = utils.serialize_img(fake_img)
-    deserialized_img = utils.deserialize_img(serialized_img)
-    assert np.equal(fake_img, deserialized_img).all()
-
-
 @pytest.mark.parametrize(
-    "img",
+    "array",
     [
-        np.random.randint(0, 1024, (600, 600, 3)),  # 32 bits image
-        np.random.rand(600, 600, 3),  # 0-1, float image
+        np.random.randint(0, 256, (500, 500, 3), np.uint8),
+        np.random.randint(0, 65536, (500, 500, 3), np.uint16),
+        np.random.rand(500, 500, 3).astype(np.float32),
+        np.random.randint(0, 256, (10, 500, 500, 3), np.uint8),
     ],
 )
-def test_serialize_img_fail(img):
-    """Test serialized img with wrong data."""
-    with pytest.raises(ValueError):
-        utils.serialize_img(img)
+def test_serialize_deserialize_array(array):
+    """Test serialized and deserialized array.
 
+    Tested:
+        - 8 bits int img (0256)
+        - 16 bits int img (0-65536)
+        - 32 bits float img (0-1)
+        - 8 bits video [FRAMExWxLxC]
+    """
 
-def test_deserialize_img_fail(mocker):
-    """Test deserialized img with wrong data."""
-    mocker.patch("cv2.imdecode", return_value=None)
-    with pytest.raises(ValueError):
-        img = np.random.randint(0, 255, (600, 600, 3))
-        serialized_img = utils.serialize_img(img)
-        utils.deserialize_img(serialized_img)
+    serialized_array = utils.serialize_array(array)
+    assert isinstance(serialized_array, bytes)
+
+    deserialized_array = utils.deserialize_array(serialized_array)
+    assert isinstance(deserialized_array, np.ndarray)
+
+    assert np.equal(array, deserialized_array).all()
