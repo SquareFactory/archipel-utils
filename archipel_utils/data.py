@@ -14,8 +14,19 @@ limitations under the License.
 """
 
 import io
+import warnings
 
 import numpy as np
+
+warnings.simplefilter("always", DeprecationWarning)
+
+
+def serialize_img(array: np.ndarray) -> bytes:
+    """Serialize a numpy array into bytes."""
+    warnings.warn(
+        "`serialize_img` is deprecated; use `serialize_array`", DeprecationWarning
+    )
+    return serialize_array(array)
 
 
 def serialize_array(array: np.ndarray) -> bytes:
@@ -23,6 +34,14 @@ def serialize_array(array: np.ndarray) -> bytes:
     buffer = io.BytesIO()
     np.save(buffer, array)
     return buffer.getvalue()
+
+
+def deserialize_img(serialized_array: bytes) -> np.ndarray:
+    """Serialize a bytes variable into numpy array."""
+    warnings.warn(
+        "`deserialize_img` is deprecated; use `deserialize_array`", DeprecationWarning
+    )
+    return deserialize_array(serialized_array)
 
 
 def deserialize_array(serialized_array: bytes) -> np.ndarray:

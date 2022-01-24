@@ -45,3 +45,14 @@ def test_serialize_deserialize_array(array):
     assert isinstance(deserialized_array, np.ndarray)
 
     assert np.equal(array, deserialized_array).all()
+
+
+def test_serialize_deserialize_img():
+    """Test serialized and deserialized img."""
+
+    img = np.random.randint(0, 256, (500, 500, 3), np.uint8)
+    with pytest.deprecated_call():
+        serialized_img = utils.serialize_img(img)
+    with pytest.deprecated_call():
+        deserialized_img = utils.deserialize_img(serialized_img)
+    assert np.equal(img, deserialized_img).all()
