@@ -16,23 +16,15 @@ limitations under the License.
 import io
 
 import numpy as np
-from PIL import Image
 
 
-def serialize_img(array: np.ndarray) -> bytes:
+def serialize_array(array: np.ndarray) -> bytes:
     """Serialize a numpy array into bytes."""
-    if array.max() > 255:
-        raise ValueError("Can only serialize 8bits images")
-    if array.dtype != "uint8":
-        raise ValueError(f"Array dtype must be 'uint8', got '{array.dtype}'")
     buffer = io.BytesIO()
-    Image.fromarray(array).save(buffer, format="png")
+    np.save(buffer, array)
     return buffer.getvalue()
 
 
-def deserialize_img(serialized_array: bytes) -> np.ndarray:
+def deserialize_array(serialized_array: bytes) -> np.ndarray:
     """Serialize a bytes variable into numpy array."""
-    decoded_array = Image.open(io.BytesIO(bytearray(serialized_array)))
-    if decoded_array is None:
-        raise ValueError("Fail to decode serialized array")
-    return np.array(decoded_array)
+    return np.load(io.BytesIO(serialized_array))
