@@ -14,25 +14,36 @@ limitations under the License.
 """
 
 import io
+import warnings
 
 import numpy as np
-from PIL import Image
+
+warnings.simplefilter("always", DeprecationWarning)
 
 
 def serialize_img(array: np.ndarray) -> bytes:
     """Serialize a numpy array into bytes."""
-    if array.max() > 255:
-        raise ValueError("Can only serialize 8bits images")
-    if array.dtype != "uint8":
-        raise ValueError(f"Array dtype must be 'uint8', got '{array.dtype}'")
+    warnings.warn(
+        "`serialize_img` is deprecated; use `serialize_array`", DeprecationWarning
+    )
+    return serialize_array(array)
+
+
+def serialize_array(array: np.ndarray) -> bytes:
+    """Serialize a numpy array into bytes."""
     buffer = io.BytesIO()
-    Image.fromarray(array).save(buffer, format="png")
+    np.save(buffer, array)
     return buffer.getvalue()
 
 
 def deserialize_img(serialized_array: bytes) -> np.ndarray:
     """Serialize a bytes variable into numpy array."""
-    decoded_array = Image.open(io.BytesIO(bytearray(serialized_array)))
-    if decoded_array is None:
-        raise ValueError("Fail to decode serialized array")
-    return np.array(decoded_array)
+    warnings.warn(
+        "`deserialize_img` is deprecated; use `deserialize_array`", DeprecationWarning
+    )
+    return deserialize_array(serialized_array)
+
+
+def deserialize_array(serialized_array: bytes) -> np.ndarray:
+    """Serialize a bytes variable into numpy array."""
+    return np.load(io.BytesIO(serialized_array))

@@ -33,7 +33,6 @@ setup(
     install_requires=[
         "msgpack>=1.0",
         "numpy>=1.21",
-        "Pillow>=8.1",
         "pytest>=6.2",
         "pytest-cov>=2.11",
         "pytest-mock>=3.5",
