@@ -15,9 +15,89 @@ limitations under the License.
 
 import re
 import subprocess
+from functools import wraps
 from typing import Dict, List, Union
 
+from py3nvml import py3nvml
 
+try:
+    py3nvml.nvmlInit()
+    GPUS_AVAILABLE = True
+    NUM_GPUS = py3nvml.nvmlDeviceGetCount()
+except (py3nvml.NVMLError_DriverNotLoaded, py3nvml.NVMLError_LibraryNotFound):
+    GPUS_AVAILABLE = False
+    NUM_GPUS = 0
+
+
+def are_gpus_available(func):
+    """Decorator to check if gpus are are_gpus_available."""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not GPUS_AVAILABLE:
+            raise RuntimeError("Cannot use GPU utilities")
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def get_num_gpus() -> int:
+    """Get the number of available gpus.
+
+    Args:
+        None
+
+    Returns:
+        number of gpus
+
+    Raises:
+        None
+    """
+    return NUM_GPUS
+
+
+@are_gpus_available
+def get_device_vram_usage(device_id: int, free: bool = False) -> int:
+    """Get GPU VRAM usage (in MB) for one specific device.
+
+    Args:
+        device_id: id of the needed asked
+        free: if false, return used memory, if true return free available memory
+
+    Returns:
+        VRAM usage (free or used) in MiB
+
+    Raises:
+        ValueError: invalid device id
+    """
+
+    if device_id > NUM_GPUS - 1 or device_id < 0:
+        raise ValueError(f"Invalid device id: {device_id}")
+
+    handle = py3nvml.nvmlDeviceGetHandleByIndex(device_id)
+    info = py3nvml.nvmlDeviceGetMemoryInfo(handle)
+
+    return info.free >> 20 if free else info.used >> 20
+
+
+@are_gpus_available
+def get_devices_vram_usage(free: bool = False) -> List[int]:
+    """Get GPU VRAM usage (in MB) for all specific devices.
+
+    Args:
+        free: if false, return used memory, if true return free available memory
+
+    Returns:
+        list of VRAM usage
+
+    Raises:
+        None.
+
+    """
+    return [get_device_vram_usage(i, free) for i in range(NUM_GPUS)]
+
+
+@are_gpus_available
 def get_vram_usages(pids: Union[int, List[int]]) -> Dict[int, int]:
     """Get GPU VRAM usage (in MB) for one or more pids.
 
@@ -34,23 +114,13 @@ def get_vram_usages(pids: Union[int, List[int]]) -> Dict[int, int]:
     if isinstance(pids, int):
         pids = [pids]
 
-    cmd = [
-        "nvidia-smi",
-        "--query-compute-apps=used_memory,pid",
-        "--format=csv,noheader,nounits",
-    ]
-    outputs = subprocess.run(cmd, check=True, capture_output=True, text=True)
-
-    # Clean nvidia-smi outputs
-    lines = outputs.stdout.strip().split("\n")
-    lines = [line for line in lines if line != ""]
-
     usages = {}
-    for line in lines:
-        gpu_mem, pid = map(int, line.split(", "))
-        if pid not in pids:
-            continue
-        usages[pid] = gpu_mem
+    for i in range(NUM_GPUS):
+        handle = py3nvml.nvmlDeviceGetHandleByIndex(i)
+        for proc in py3nvml.nvmlDeviceGetComputeRunningProcesses(handle):
+            if proc.pid not in pids:
+                continue
+            usages[proc.pid] = proc.usedGpuMemory
 
     for pid in pids:
         if pid not in usages:
