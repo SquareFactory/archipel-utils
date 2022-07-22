@@ -13,11 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import re
-import subprocess
 from functools import wraps
 from typing import Dict, List, Union
 
+import psutil
 from py3nvml import py3nvml
 
 try:
@@ -70,6 +69,9 @@ def get_device_vram_usage(device_id: int, free: bool = False) -> int:
     Raises:
         ValueError: invalid device id
     """
+
+    if NUM_GPUS == 0:
+        return 0
 
     if device_id > NUM_GPUS - 1 or device_id < 0:
         raise ValueError(f"Invalid device id: {device_id}")
@@ -145,23 +147,13 @@ def get_ram_usages(pids: Union[int, List[int]]) -> Dict[int, Dict[str, int]]:
     if isinstance(pids, int):
         pids = [pids]
 
-    cmd = "ps -eo vsize,rss,pid".split()
-    outputs = subprocess.run(cmd, check=True, capture_output=True, text=True)
-    lines = outputs.stdout.split("\n")
-
     usages = {}
-    for line in lines[1:-1]:
-        line = re.sub(r"\s+", " ", line)
-        virt_ram_mem, used_ram_mem, pid = map(int, line.strip().split(" "))
-        if pid not in pids:
-            continue
-        usages[pid] = {
-            "virt": int(virt_ram_mem / 1024),
-            "used": int(used_ram_mem / 1024),
-        }
-
     for pid in pids:
-        if pid not in usages:
-            usages[pid] = {"virt": 0, "used": 0}
+        try:
+            memory = psutil.Process(pid).memory_info()
+            virt_ram, used_ram = memory.vms >> 20, memory.rss >> 20
+        except psutil.NoSuchProcess:
+            virt_ram, used_ram = 0, 0
+        usages[pid] = {"virt": virt_ram, "used": used_ram}
 
     return usages
