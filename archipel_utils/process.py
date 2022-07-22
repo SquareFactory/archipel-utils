@@ -55,6 +55,7 @@ def get_num_gpus() -> int:
     return NUM_GPUS
 
 
+@are_gpus_available
 def get_device_vram_usage(device_id: int, free: bool = False) -> int:
     """Get GPU VRAM usage (in MB) for one specific device.
 
