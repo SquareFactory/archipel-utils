@@ -39,5 +39,6 @@ setup(
         "pytest-cov>=2.11",
         "pytest-mock>=3.5",
     ],
+    tests_require=["opencv-python>=4.5.4"],
     packages=find_packages(),
 )

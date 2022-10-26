@@ -13,37 +13,47 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import base64
 import io
-import warnings
 
 import numpy as np
 
-warnings.simplefilter("always", DeprecationWarning)
+try:
+    import cv2
 
-
-def serialize_img(array: np.ndarray) -> bytes:
-    """Serialize a numpy array into bytes."""
-    warnings.warn(
-        "`serialize_img` is deprecated; use `serialize_array`", DeprecationWarning
-    )
-    return serialize_array(array)
+    OPENCV_AVAILABLE = True
+except ModuleNotFoundError:
+    OPENCV_AVAILABLE = False
 
 
 def serialize_array(array: np.ndarray) -> bytes:
     """Serialize a numpy array into bytes."""
-    buffer = io.BytesIO()
-    np.save(buffer, array)
-    return buffer.getvalue()
 
-
-def deserialize_img(serialized_array: bytes) -> np.ndarray:
-    """Serialize a bytes variable into numpy array."""
-    warnings.warn(
-        "`deserialize_img` is deprecated; use `deserialize_array`", DeprecationWarning
-    )
-    return deserialize_array(serialized_array)
+    if (
+        array.dtype not in [np.uint16, np.float32]
+        and len(array.shape) <= 3
+        and OPENCV_AVAILABLE
+    ):
+        # basic image
+        success, encoded_array = cv2.imencode(".png", array)
+        if not success:
+            raise ValueError("Fail to encode array")
+        return base64.b64encode(encoded_array)
+    else:
+        buffer = io.BytesIO()
+        np.save(buffer, array)
+        return buffer.getvalue()
 
 
 def deserialize_array(serialized_array: bytes) -> np.ndarray:
     """Serialize a bytes variable into numpy array."""
-    return np.load(io.BytesIO(serialized_array))
+    try:
+        # serialized data from python
+        return np.load(io.BytesIO(serialized_array))
+    except ValueError:
+        # serialized data from other sources
+        if not OPENCV_AVAILABLE:
+            raise ModuleNotFoundError("opencv-python is not available")
+        deserialized_array = base64.b64decode(serialized_array)
+        array = np.frombuffer(deserialized_array, dtype=np.uint8)
+        return cv2.imdecode(array, cv2.IMREAD_UNCHANGED)

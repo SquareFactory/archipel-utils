@@ -65,7 +65,7 @@ jobs:
       - name: Code coverage
         if: success()
         run: |
-          MIN_COVERAGE="95.00"
+          MIN_COVERAGE="92.00"
 
           coverage report
 
