@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 
+### [0.2.1](https://github.com/SquareFactory/archipel-utils/compare/v0.2.0...v0.2.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* **ci:** missing extra files in release please ([#13](https://github.com/SquareFactory/archipel-utils/issues/13)) ([65b012a](https://github.com/SquareFactory/archipel-utils/commit/65b012a415257e277a3229a679c693428b55d8bb))
+
 ## [0.2.0](https://github.com/SquareFactory/archipel-utils/compare/v0.1.8...v0.2.0) (2022-10-26)
 
 
