@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 
+## [0.2.0](https://github.com/SquareFactory/archipel-utils/compare/v0.1.8...v0.2.0) (2022-10-26)
+
+
+### Features
+
+* **ci:** release please ([#11](https://github.com/SquareFactory/archipel-utils/issues/11)) ([b9afa34](https://github.com/SquareFactory/archipel-utils/commit/b9afa3493936aef0642989c7ebeca35c3f52f7d2))
+* **serialization/deserialization:** fully compatible with base64 ([#10](https://github.com/SquareFactory/archipel-utils/issues/10)) ([98377fe](https://github.com/SquareFactory/archipel-utils/commit/98377fecdad5ca27a1087076019dce8f014724ea))
+
 ## [0.1.9] - 2022-07-22
 
 ### Improvements
