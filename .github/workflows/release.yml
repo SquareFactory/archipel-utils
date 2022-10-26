@@ -16,3 +16,4 @@ jobs:
         uses: google-github-actions/release-please-action@v3.1.2
         with:
           release-type: python
+          extra-files: archipel_utils/__init__.py
