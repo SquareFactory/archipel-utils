@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 
+### [0.2.3](https://github.com/SquareFactory/archipel-utils/compare/v0.2.2...v0.2.3) (2022-12-15)
+
+
+### Bug Fixes
+
+* **data:** lost dimension when grayscale ([#17](https://github.com/SquareFactory/archipel-utils/issues/17)) ([6ad3542](https://github.com/SquareFactory/archipel-utils/commit/6ad3542716f2ff5069a73272208c207fb22b1179))
+
 ### [0.2.2](https://github.com/SquareFactory/archipel-utils/compare/v0.2.1...v0.2.2) (2022-10-26)
 
 
