@@ -23,6 +23,8 @@ import pytest
 import archipel_utils as utils
 
 arrays = [
+    np.random.randint(0, 256, (500, 500, 1), np.uint8),
+    np.random.randint(0, 256, (500, 500), np.uint8),
     np.random.randint(0, 256, (500, 500, 3), np.uint8),
     np.random.randint(0, 65536, (500, 500, 3), np.uint16),
     np.random.rand(500, 500, 3).astype(np.float32),
