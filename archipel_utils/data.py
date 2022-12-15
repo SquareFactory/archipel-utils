@@ -31,7 +31,7 @@ def serialize_array(array: np.ndarray) -> bytes:
 
     if (
         array.dtype not in [np.uint16, np.float32]
-        and len(array.shape) <= 3
+        and len(array.shape) == 3
         and OPENCV_AVAILABLE
     ):
         # basic image
@@ -56,4 +56,8 @@ def deserialize_array(serialized_array: bytes) -> np.ndarray:
             raise ModuleNotFoundError("opencv-python is not available")
         deserialized_array = base64.b64decode(serialized_array)
         array = np.frombuffer(deserialized_array, dtype=np.uint8)
-        return cv2.imdecode(array, cv2.IMREAD_UNCHANGED)
+        data = cv2.imdecode(array, cv2.IMREAD_UNCHANGED)
+        if len(data.shape) == 2:
+            # to be sure to keep the empty dim for color
+            data = np.expand_dims(data, axis=2)
+        return data
