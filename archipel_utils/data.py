@@ -15,6 +15,7 @@ limitations under the License.
 
 import base64
 import io
+from typing import List, Union
 
 import numpy as np
 
@@ -45,8 +46,11 @@ def serialize_array(array: np.ndarray) -> bytes:
         return buffer.getvalue()
 
 
-def deserialize_array(serialized_array: bytes) -> np.ndarray:
+def deserialize_array(serialized_array: Union[bytes, List[int]]) -> np.ndarray:
     """Serialize a bytes variable into numpy array."""
+
+    serialized_array = bytes(serialized_array)
+
     try:
         # serialized data from python
         return np.load(io.BytesIO(serialized_array))
