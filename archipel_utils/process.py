@@ -23,7 +23,11 @@ try:
     py3nvml.nvmlInit()
     GPUS_AVAILABLE = True
     NUM_GPUS = py3nvml.nvmlDeviceGetCount()
-except (py3nvml.NVMLError_DriverNotLoaded, py3nvml.NVMLError_LibraryNotFound):
+except (
+    py3nvml.NVMLError_DriverNotLoaded,
+    py3nvml.NVMLError_LibraryNotFound,
+    py3nvml.NVMLError_LibRmVersionMismatch,
+):
     GPUS_AVAILABLE = False
     NUM_GPUS = 0
 
