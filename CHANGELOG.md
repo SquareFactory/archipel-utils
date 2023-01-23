@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 
+## [0.3.0](https://github.com/SquareFactory/archipel-utils/compare/v0.2.3...v0.3.0) (2023-01-23)
+
+
+### Features
+
+* **data:** decode img from list of int ([b378749](https://github.com/SquareFactory/archipel-utils/commit/b37874994f66200507df96c3e706519abab26ee4))
+
+
+### Bug Fixes
+
+* **process:** add exception when nvidia not available ([53e75ab](https://github.com/SquareFactory/archipel-utils/commit/53e75abc6f9d605825aeffacf21cc70b3054f658))
+
 ### [0.2.3](https://github.com/SquareFactory/archipel-utils/compare/v0.2.2...v0.2.3) (2022-12-15)
 
 
