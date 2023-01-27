@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 
+### [0.3.1](https://github.com/SquareFactory/archipel-utils/compare/v0.3.0...v0.3.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* **msg:** strict map key to false when unmsgpack ([7e3cb6a](https://github.com/SquareFactory/archipel-utils/commit/7e3cb6a3eda64726572537f2f765b7c2db787dc7))
+
 ## [0.3.0](https://github.com/SquareFactory/archipel-utils/compare/v0.2.3...v0.3.0) (2023-01-23)
 
 
