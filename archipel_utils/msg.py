@@ -47,7 +47,7 @@ def get_decoded_msg(msg: bytes, mandatory_keys: set):
     """Decoded msgpack message."""
 
     try:
-        decoded_msg = msgpack.unpackb(msg)
+        decoded_msg = msgpack.unpackb(msg, strict_map_key=False)
     except TypeError:
         error_msg = f"Message must be <class 'bytes'>, got {type(msg)}"
         return False, error_msg, {}
